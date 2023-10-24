@@ -1,0 +1,80 @@
+﻿@model User_Login.Models.Transactions
+
+@{
+    ViewData["PageTitle"] = Model.TransactionId == 0 ? "Create a new transaction" : "Edit transaction";
+}
+
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="widget p-5" style="background-color:#212b36">
+            <form asp-action="AddOrEdit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="TransactionId" value="@Model.TransactionId" />
+                <input type="hidden" name="User_Id" id="User_Id" value="" />
+                <div class="mb-3">
+                    <ejs-datepicker id="date" ejs-for="Date"
+                                    placeholder="Date" floatLabelType="Always"
+                                    format="MMM-dd-yy"></ejs-datepicker>
+                </div>
+                <div class="mb-3">
+                    <ejs-dropdownlist id="ddlCategory" ejs-for="CategoryId"
+                                      dataSource="@ViewBag.Categories" placeholder="Category"
+                                      floatLabelType="Always" allowFiltering="true" ignoreAccent="true"
+                                      filterType="Contains" popupHeight="220px">
+                        <e-dropdownlist-fields value="CategoryId" text="TitleWithIcon"></e-dropdownlist-fields>
+                    </ejs-dropdownlist>
+                    <span asp-validation-for="CategoryId" class="text-danger fs-6"></span>
+                </div>
+                <div class="mb-3">
+                    <ejs-numerictextbox id="amount" ejs-for="Amount"
+                                        placeholder="Amount" floatLabelType="Always"
+                                        min=0 format="₹0"></ejs-numerictextbox>
+                    <span asp-validation-for="Amount" class="text-danger fs-6"></span>
+                </div>
+                <div class="mb-3">
+                    <ejs-textbox id="note" placeholder="Note" ejs-for="Note"
+                                 floatLabelType="Always" multiline="true"></ejs-textbox>
+                </div>
+                
+
+                <input type="hidden" id="userData" name="userData" value=""   />
+                <ejs-button id="submit" type="submit" content="Submit" cssClass="e-success"></ejs-button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-money-bill-transfer fa-2xl"></i>
+        </div>
+    </div>
+</div>
+<script>
+    var userEmail = decodeURIComponent(getCookie("UserId")); // This assumes the user's email is stored in the "UserEmail" cookie
+   
+    var cookieValue = document.cookie.replace(/(?:(?:^|.;\s)UserData\s*=\s*([^;]*).*$)|^.*$/, "$1");
+
+    // Set the cookie value as the value of the hidden input field
+    document.getElementById("userId").value = cookieValue;
+
+    var user = _context.Users.SingleOrDefault(u => u.Email == userEmail);
+
+    console.log("in script");
+    if (user != null) {
+        // User found, you can access the ID
+        var userId = user.Id;
+        // Now, set the User_Id hidden input field with the user's ID
+        document.getElementById("User_Id").value = userId;
+    }
+
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+</script>
+@*@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}*@
